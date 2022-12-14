@@ -1,11 +1,9 @@
 package day14
 
-import java.lang.Exception
-import java.lang.IllegalStateException
 import kotlin.math.max
 import kotlin.math.min
 
-// AOC 2022 14-1
+// AOC 2022 14-2
 fun main() {
     val empty = 0.toUByte()
     val wall = 1.toUByte()
@@ -48,7 +46,7 @@ fun main() {
     // simulate
     var step = 0
     outer@ while (true) {
-            step++
+        step++
         var (x, y) = source
         while (true) {
             if (map[mapX(x)][y + 1] == empty) {
