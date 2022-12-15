@@ -1,3 +1,5 @@
+package day7
+
 // AOC 2022 7-2
 fun main() {
     val stack = java.util.ArrayDeque<String>()

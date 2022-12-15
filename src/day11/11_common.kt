@@ -1,3 +1,5 @@
+package day11
+
 // common functions and classes for day 11
 data class Monkey(
     val index: Int, val items: ArrayDeque<Long>, val operation: (Long) -> Long, val divisibilityTest: Int,

@@ -1,3 +1,4 @@
+package day5
 // AOC 2022 5-1
 final reader = new BufferedReader(new InputStreamReader(System.in))
 final List<String> stacks = []
@@ -21,7 +22,7 @@ String line
 while ((line = reader.readLine()) != null) {
   final split = line.split(" ") // "move X from Y to Z"
   final x = split[1] as int, y = split[3] as int - 1, z = split[5] as int - 1
-  stacks[z] = stacks[y].substring(0, x).reverse() + stacks[z]
+  stacks[z] = stacks[y].substring(0, x) + stacks[z]
   stacks[y] = stacks[y].substring(x)
 }
 

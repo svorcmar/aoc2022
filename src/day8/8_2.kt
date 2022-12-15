@@ -1,3 +1,5 @@
+package day8
+
 // AOC 2022 8-2
 fun main() {
     val input = generateSequence { readlnOrNull() }.toList()

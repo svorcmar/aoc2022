@@ -1,3 +1,5 @@
+package day10
+
 // AOC 2022 10-1
 fun main() {
     var cycle = 1

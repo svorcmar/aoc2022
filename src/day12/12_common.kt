@@ -1,4 +1,4 @@
-// common functions and classes for day 12
+package day12// common functions and classes for day 12
 
 data class Node(val x: Int, val y: Int, val elevation: Int, val length: Int)
 
