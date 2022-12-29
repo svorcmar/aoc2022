@@ -5,14 +5,15 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-// AOC 2022 24-1
+private val dirs = mapOf(
+    8 to (0 to -1),
+    4 to (0 to 1),
+    2 to (-1 to 0),
+    1 to (1 to 0)
+)
+
+// AOC 2022 24-2
 fun main() {
-    val dirs = mapOf(
-        8 to (0 to -1),
-        4 to (0 to 1),
-        2 to (-1 to 0),
-        1 to (1 to 0)
-    )
     val s0 = generateSequence { readlnOrNull() }.map { line ->
         line.map { char ->
             when (char) {
@@ -53,28 +54,37 @@ fun main() {
         }
         environment.add(arr)
     }
-    // solve A*
-    val targetRow = s0.size - 1
-    val targetCol = s0[0].size - 2
+    // solve A* three times
+    val phase1 = aStarSolve(environment, 0, 1, 0, period, s0.size - 1, s0[0].size - 2)
+    val phase2 = aStarSolve(environment, s0.size - 1, s0[0].size - 2, phase1 % period, period, 0, 1)
+    val phase3 = aStarSolve(environment, 0, 1, (phase1 + phase2) % period, period, s0.size - 1, s0[0].size - 2)
+    println(phase1 + phase2 + phase3)
+}
+
+private fun aStarSolve(
+    environment: List<Array<IntArray>>, startRow: Int, startCol: Int, startEnvIdx: Int, period: Int,
+    targetRow: Int, targetCol: Int
+): Int {
     data class State(val row: Int, val col: Int, val envIdx: Int)
 
     data class QueueItem(val state: State, val cost: Int) : Comparable<QueueItem> {
         // heuristic cost = real cost + manhattan distance to the target
         private val hCost = cost + abs(state.row - targetRow) + abs(state.col - targetCol)
+
         override operator fun compareTo(other: QueueItem): Int {
             return hCost - other.hCost
         }
     }
+
     val visited = mutableSetOf<State>()
-    val initState = State(0, 1, 0)
+    val initState = State(startRow, startCol, startEnvIdx)
     visited.add(initState)
     val queue = PriorityQueue<QueueItem>()
     queue.add(QueueItem(initState, 0))
     while (queue.isNotEmpty()) {
         val (state, cost) = queue.remove()
         if (state.row == targetRow && state.col == targetCol) {
-            println(cost)
-            break
+            return cost
         }
         val nEnvIdx = (state.envIdx + 1) % period
         // move
@@ -82,7 +92,9 @@ fun main() {
             val nRow = state.row + dr
             val nCol = state.col + dc
             val newState = State(nRow, nCol, nEnvIdx)
-            if (nRow > 0 && environment[nEnvIdx][nRow][nCol] == 0 && visited.add(newState)) {
+            if (nRow >= 0 && nCol >= 0 && nRow < environment[nEnvIdx].size && nCol < environment[nEnvIdx][nRow].size &&
+                environment[nEnvIdx][nRow][nCol] == 0 && visited.add(newState)
+            ) {
                 queue.add(QueueItem(newState, cost + 1))
             }
         }
@@ -92,6 +104,7 @@ fun main() {
             queue.add(QueueItem(newState, cost + 1))
         }
     }
+    throw IllegalStateException("No path found")
 }
 
 private tailrec fun gcd(a: Int, b: Int): Int {
@@ -105,4 +118,3 @@ private tailrec fun gcd(a: Int, b: Int): Int {
 private fun lcm(a: Int, b: Int): Int {
     return a * b / gcd(a, b)
 }
-
